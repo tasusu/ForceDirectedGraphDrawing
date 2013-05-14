@@ -1,0 +1,12 @@
+body{
+	background-color: #111;
+}
+
+#wrapper{
+	width: 600px;
+	margin:0 auto;
+}
+
+#maincanvas{
+	margin: 0 auto;
+}
