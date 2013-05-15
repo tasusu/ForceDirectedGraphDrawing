@@ -1,6 +1,14 @@
 CANVAS_SIZE = 600
 canvas = {}
 
+function draw(){
+	var ctx = canvas.getContext("2d")
+	ctx.clearRect(0,0,600,600)
+	graph.move()
+	graph.draw()
+}
+
+
 var graph={
 	nodes: new Array(),
 	edges: new Array(),
@@ -23,6 +31,43 @@ var graph={
 		for(var i=0;i<this.nodes.length;i++){
 			this.nodes[i].draw()
 		}
+	},
+	
+	move: function(){
+		for(var i=0;i<this.nodes.length;i++){
+			var node = this.nodes[i]
+			var x = node.posx
+			var y = node.posy
+			
+			for(var j=0;j<this.nodes.length;j++){
+				if(i != j){
+					var x0 = this.nodes[j].posx
+					var y0 = this.nodes[j].posy
+					node.vx += rungeKutta(elecPow(x0), 0, x)
+					node.vy += rungeKutta(elecPow(y0), 0, y)
+				}
+			}
+		}
+			
+		for(var i=0;i<this.edges.length; i++){
+			var u = this.edges[i].begin
+			var v = this.edges[i].end
+			
+			u.vx += rungeKutta(springPow(v.posx), 0, u.posx)
+			u.vy += rungeKutta(springPow(v.posy), 0, u.posy)
+			v.vx += rungeKutta(springPow(u.posx), 0, v.posx)
+			v.vy += rungeKutta(springPow(u.posy), 0, v.posy)
+		}
+
+		for(var i=0;i<this.nodes.length;i++){
+			var node = this.nodes[i]
+			node.posx += node.vx * STEP
+			node.posy += node.vy * STEP
+			
+			node.vx *= MU
+			node.vy *= MU
+			
+		}
 	}
 }
 
@@ -40,7 +85,6 @@ Node.prototype = {
 		var ctx = canvas.getContext("2d")
 		ctx.beginPath();
 	  	ctx.fillStyle = 'rgb(0,204,255)'; // 赤
-	  	console.log(this.posx)
 	  	ctx.arc(this.posx, this.posy, 10, 0, Math.PI*2, false);
 	  	ctx.fill();
 	}
@@ -70,13 +114,48 @@ Edge.prototype = {
 /* 実行時ロード */
 $(function(){
 	canvas = document.getElementById("maincanvas")
-	for(var i=0;i<6;i++){
+	
+	var n = 30
+	
+	for(var i=0;i<n;i++){
 		graph.addnode()
 	}
-	for(var i=0;i<6;i++){
-		for(var j=i+1;j<6;j++){
-			graph.addedge(i,j)
-		}
+	for(var j=1;j<n;j++){
+		graph.addedge(0,j)
 	}
-	graph.draw()
+	//draw()
+	//
+	
+	setInterval("draw()", 10)
 })
+
+
+/* ルンゲクッタ法 */
+var K = 0.01 // ばね定数
+var C = 10000 // クーロン定数
+var STEP = 0.1 // 時間ステップ幅
+var MU = 0.99 // 摩擦による減衰
+
+function rungeKutta(f, t, x){
+	var k1 = f(t,x)
+	var k2 = f(t + STEP/2, x + k1*STEP/2)
+	var k3 = f(t + STEP/2, x + k2*STEP/2)
+	var k4 = f(t + STEP, x + STEP * k3)
+	return STEP * (k1+2*k2+2*k3+k4)/6
+}
+
+function springPow(x0){
+	var f = function(t,x){
+		return - K * (x-x0)
+	}
+	return f
+}
+
+
+function elecPow(x0){
+	var f = function(t,x){		
+		var sgn = x-x0 > 0 ? 1 : -1
+		return C * sgn / ((x-x0) * (x-x0))
+	}
+	return f
+}
