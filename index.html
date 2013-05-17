@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Force Directed Graph Drawing</title>
+		<link rel="stylesheet" href="default.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="core.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+		<canvas id="maincanvas" width="600" height="600"></canvas>
+		</div>
+		<section>
+		<p>
+		グラフの選択
+		<select name="graphselect" id="graphselect" size="1">
+			<option value="star">スター</option>
+			<option value="twostar">2スター</option>
+			<option value="complete">完全グラフ</option>
+			<option value="bipartite">2部グラフ</option>
+		</select>
+		<button id="redraw">再描画</button>
+		</p>
+		
+		<h2>説明</h2>
+		<p>Force-Directed Graph Drawingというグラフ描画アルゴリズムをHTML5で実装したものです．<br>
+			点をクーロンの法則に従う反発する粒子，枝をフックの法則に従うばねとみなして物理系のシミュレートを行なっています．<br>
+			グラフの点はドラグして動かすことができます．</p>
+		</section>
+	</body>
+</html>
