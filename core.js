@@ -3,12 +3,59 @@ CANVAS_HEIGHT = 600
 canvas = {}
 graph = {}
 timer = {}
+binded = undefined
 
+/* キャンバス描画 */
 function draw(){
 	var ctx = canvas.getContext("2d")
 	ctx.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT)
 	graph.move()
 	graph.draw()
+}
+
+/* リサイズ */
+function resize() {
+	CANVAS_WIDTH = $(window).width();
+	CANVAS_HEIGHT = $(window).height() - 200
+
+	$('#maincanvas').attr({
+		width  : CANVAS_WIDTH,
+		height : CANVAS_HEIGHT
+	});
+}
+
+/* キャンバス上の座標取得 */
+function getPosition(e){
+	var x = e.pageX - $('#maincanvas').position().left;
+	var y = e.pageY - $('#maincanvas').position().top;
+	return {x: x, y: y};
+}
+
+/* キャンバス上のマウス押下 */
+function onCanvasMousedown(e){
+	var pos = getPosition(e)
+	for(var id in graph.nodes){
+		var node = graph.nodes[id]
+		if(node.mouseon(pos)){
+			binded = id
+			break
+		}
+	}
+}
+
+/* キャンバス上のマウス移動 */
+function onCanvasMousemove(e){
+	if(binded){
+		var pos = getPosition(e)
+		var bindednode = graph.nodes[binded]
+		bindednode.posx = pos.x
+		bindednode.posy = pos.y
+	}
+}
+
+/* キャンバス上のマウス解除 */
+function onCanvasMouseup(e){
+	binded = undefined
 }
 
 /* Graphクラス */
@@ -38,16 +85,23 @@ Graph.prototype.addedge = function(u,v){
 }
 
 Graph.prototype.draw = function(){
+	var energy = 0
 	for(var i=0;i<this.edges.length;i++){
 		this.edges[i].draw()
 	}
 	for(var id in this.nodes){
 		this.nodes[id].draw()
+		energy += this.nodes[id].energy()
 	}
 }
 
 Graph.prototype.move = function(){
 	for(var id in this.nodes){
+		if(id == binded){
+			continue
+		}
+		
+		
 		var node = this.nodes[id]
 		var x = node.posx
 		var y = node.posy
@@ -104,6 +158,14 @@ Node.prototype.draw = function(){
   	ctx.fill();
 }
 
+Node.prototype.energy = function(){
+	return ((this.vx)*(this.vx) + (this.vy)*(this.vy))/2
+}
+
+Node.prototype.mouseon = function(e){
+	return Math.sqrt((this.posx - e.x)*(this.posx - e.x)
+						+ (this.posy - e.y) * (this.posy - e.y)) < 10
+}
 
 /* Edgeクラス */
 function Edge(u, v){
@@ -126,7 +188,6 @@ Edge.prototype.draw = function(){
 
 /* グラフの切り替え */
 function changeGraph(graphname){
-	console.log(graphname)
 	clearInterval(timer) // タイマーを停止
 	
 	graph = new Graph()
@@ -172,24 +233,10 @@ function changeGraph(graphname){
 	timer = setInterval("draw()", 20) // タイマー再開
 }
 
-
-/* リサイズ */
-function resize() {
-	CANVAS_WIDTH = $(window).width() - 100;
-	CANVAS_HEIGHT = $(window).height() - 100
-	console.log(CANVAS_WIDTH)
-
-	$('#maincanvas').attr({
-		width  : CANVAS_WIDTH,
-		height : CANVAS_HEIGHT
-	});
-}
-
 /* 実行時ロード */
 $(function(){
 	resize()
 	canvas = document.getElementById("maincanvas")
-	graph = new Graph()
 	
 	$('#graphselect').change(function(){
 		var graphname = $(this).children(':selected').val()
@@ -200,6 +247,10 @@ $(function(){
 		var graphname = $("#graphselect").children(':selected').val()
 		changeGraph(graphname)
 	})
+	
+	$("#maincanvas").mousemove(onCanvasMousemove)
+	.mousedown(onCanvasMousedown)
+	.mouseup(onCanvasMouseup)
 	
 	changeGraph("star")
 })

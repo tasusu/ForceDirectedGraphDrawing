@@ -9,6 +9,8 @@
 	<body>
 		<div id="wrapper">
 		<canvas id="maincanvas" width="600" height="600"></canvas>
+		</div>
+		<section>
 		<p>
 		グラフの選択
 		<select name="graphselect" id="graphselect" size="1">
@@ -19,6 +21,11 @@
 		</select>
 		<button id="redraw">再描画</button>
 		</p>
-		</div>
+		
+		<h2>説明</h2>
+		<p>Force-Directed Graph Drawingというグラフ描画アルゴリズムをHTML5で実装したものです．<br>
+			点をクーロンの法則に従う反発する粒子，枝をフックの法則に従うばねとみなして物理系のシミュレートを行なっています．<br>
+			グラフの点はドラグして動かすことができます．</p>
+		</section>
 	</body>
 </html>
