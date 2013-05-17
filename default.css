@@ -1,9 +1,9 @@
 body{
 	background-color: #111;
+	color: #EEE;
 }
 
 #wrapper{
-	width: 600px;
 	margin:0 auto;
 }
 
