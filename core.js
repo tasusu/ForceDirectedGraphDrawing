@@ -258,7 +258,7 @@
     var C = 100000// クーロン定数
     var NATLEN = 0// ばねの自然長
     var STEP = 0.1// 時間ステップ幅
-    var MU = 0.8// 摩擦による減衰
+    var MU = 0.92// 摩擦による減衰
     var GRAB = 0.01 // 中心力
 
     function springPow(node, targetnode) {
