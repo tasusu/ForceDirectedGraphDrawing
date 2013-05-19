@@ -232,51 +232,37 @@
     };
 
     Canvas.prototype.changeGraph = function(graphname) {
-      var completegraphsize, graph, i, j, nodeside, starsize;
+      var completegraphsize, graph, i, j, nodeside, starsize, _i, _j, _k, _l, _m, _n, _o, _ref;
       clearInterval(this.timer);
       graph = new Graph();
       if (graphname === "star") {
         starsize = 25;
-        i = 1;
-        while (i < starsize) {
+        for (i = _i = 1; 1 <= starsize ? _i < starsize : _i > starsize; i = 1 <= starsize ? ++_i : --_i) {
           graph.addedge(0, i);
-          i++;
         }
       } else if (graphname === "complete") {
         completegraphsize = 5;
-        i = 0;
-        while (i < completegraphsize) {
-          j = i + 1;
-          while (j < completegraphsize) {
+        for (i = _j = 0; 0 <= completegraphsize ? _j < completegraphsize : _j > completegraphsize; i = 0 <= completegraphsize ? ++_j : --_j) {
+          for (j = _k = _ref = i + 1; _ref <= completegraphsize ? _k < completegraphsize : _k > completegraphsize; j = _ref <= completegraphsize ? ++_k : --_k) {
             graph.addedge(i, j);
-            j++;
           }
-          i++;
         }
       } else if (graphname === "bipartite") {
         nodeside = 3;
-        i = 0;
-        while (i < nodeside) {
-          j = 0;
-          while (j < nodeside) {
+        for (i = _l = 0; 0 <= nodeside ? _l < nodeside : _l > nodeside; i = 0 <= nodeside ? ++_l : --_l) {
+          for (j = _m = 0; 0 <= nodeside ? _m < nodeside : _m > nodeside; j = 0 <= nodeside ? ++_m : --_m) {
             graph.addedge(i, nodeside + j);
-            j++;
           }
-          i++;
         }
       } else if (graphname === "twostar") {
         starsize = 10;
-        i = 0;
-        while (i < starsize) {
+        for (i = _n = 0; 0 <= starsize ? _n < starsize : _n > starsize; i = 0 <= starsize ? ++_n : --_n) {
           graph.addnode(i, "orange");
           graph.addnode(i + starsize);
-          i++;
         }
-        i = 1;
-        while (i < starsize) {
+        for (i = _o = 1; 1 <= starsize ? _o < starsize : _o > starsize; i = 1 <= starsize ? ++_o : --_o) {
           graph.addedge(0, i);
           graph.addedge(starsize, i + starsize);
-          i++;
         }
         graph.addedge(0, starsize);
       } else {

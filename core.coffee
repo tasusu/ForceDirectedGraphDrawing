@@ -159,50 +159,30 @@ class Canvas
         graph = new Graph()
         if graphname is "star"
             starsize = 25
-            i = 1
-        
-            while i < starsize
-              graph.addedge 0, i
-              i++
+            for i in [1...starsize]
+                graph.addedge(0, i)                
               
         else if graphname is "complete"
             completegraphsize = 5
-            i = 0
-      
-            while i < completegraphsize
-              j = i + 1
-              while j < completegraphsize
-                graph.addedge i, j
-                j++
-              i++
+            for i in [0...completegraphsize]
+              for j in [i + 1...completegraphsize]
+                graph.addedge(i, j)
         
         else if graphname is "bipartite"
             nodeside = 3
-            i = 0
-        
-            while i < nodeside
-                j = 0
-          
-                while j < nodeside
-                    graph.addedge i, nodeside + j
-                    j++
-                
-                i++
-        
+            for i in [0...nodeside]          
+                for j in [0...nodeside]
+                    graph.addedge(i, nodeside + j)
+
         else if graphname is "twostar"
             starsize = 10
-            i = 0
-            while i < starsize
-                graph.addnode i, "orange"
-                graph.addnode i + starsize
-                i++
-            i = 1
-      
-            while i < starsize
-                graph.addedge 0, i
-                graph.addedge starsize, i + starsize
-                i++
-            graph.addedge 0, starsize
+            for i in [0...starsize]
+                graph.addnode(i, "orange")
+                graph.addnode(i + starsize)
+            for i in [1...starsize]
+                graph.addedge(0, i)
+                graph.addedge(starsize, i + starsize)
+            graph.addedge(0, starsize)
         
         else
             console.log "対応するグラフがありません"
